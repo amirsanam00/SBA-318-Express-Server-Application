@@ -3,14 +3,18 @@ const router = express.Router()
 
 const comments = require("../data/comments")
 
-//Access comments:
 
+//all comments:
+router.get("/", (req, res) => {
+    res.json(comments)
+})
+
+//Access comments for specific post:
 router.get("/post/:postId", (req, res) => {
     res.json(comments.filter(c => c.postId == req.params.postId));
 });
 
-//Adding comments:
-
+//Adding new comments:
 router.post("/", (req, res) => {
     const newComment ={
         id: comments.length+1,
