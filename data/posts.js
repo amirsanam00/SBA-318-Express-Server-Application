@@ -1,5 +1,5 @@
 
-const posts = [
+let posts = [
     {
       id: 1,
       userId: 1,

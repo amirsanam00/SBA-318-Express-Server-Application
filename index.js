@@ -7,7 +7,7 @@ const PORT = 3000
 
 //Midlleware part
 app.use(bodyParser.urlencoded({extended: true}))
-app.use(bodyParser.json({extended: true}))
+app.use(bodyParser.json())
 app.use(express.json())
 
 //Import routes
@@ -22,12 +22,13 @@ app.use("/comments", comments)
 
 //Home Route:
 app.get("/", (req, res) => {
-    res.render(indexedDB, {title: "Home Page"})
+res.render("index", {title: "Home Page"})
 })
 
 //Custom Middleware:Logs the requests:
 const loggerMiddleware = (req, res, next) => {
-console.log(`[${newDate().toISOString()}] ${req.method} ${req.url}`)
+console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`)
+next();
 };
 
 app.use(loggerMiddleware); 
@@ -35,7 +36,7 @@ app.use(loggerMiddleware);
 //Custom Middleware: Authentication:
 const authMiddleware = (req, res, next) => {
     const authHeader = req.headers [`authorization`];
-    if(!authHeader || authHeader !== 'Provide secret-token'){
+    if(!authHeader || authHeader !== 'Bearer secret-token'){
         return res.status(403).json({message: "Access denied: Invalid token"});
     }
     next();

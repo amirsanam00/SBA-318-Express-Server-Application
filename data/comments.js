@@ -1,6 +1,6 @@
 
 
-const comments = [
+let comments = [
     { id: "1", postId: "1", text: "Great post! Really insightful." },
     { id: "2", postId: "1", text: "I completely agree with this point." },
     { id: "3", postId: "2", text: "Could you elaborate on this section?" },
