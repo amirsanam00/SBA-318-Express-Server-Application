@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const path = require('path')
 
 const app = express()
 const PORT = 3000
@@ -9,15 +10,12 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json({extended: true}))
 app.use(express.json())
 
-//View Engine:
-app.set("view engine", 'ejs');
-// app.set ("views", )
-
-const users = require("./routes/user")
-const posts = require("./routes/post")
+//Import routes
+const users = require("./routes/users")
+const posts = require("./routes/posts")
 const comments = require("./routes/comments")
 
-
+//Use routes
 app.use("/users", users)
 app.use("/posts", posts)
 app.use("/comments", comments)
@@ -27,14 +25,36 @@ app.get("/", (req, res) => {
     res.render(indexedDB, {title: "Home Page"})
 })
 
+//Custom Middleware:Logs the requests:
+const loggerMiddleware = (req, res, next) => {
+console.log(`[${newDate().toISOString()}] ${req.method} ${req.url}`)
+};
+
+app.use(loggerMiddleware); 
+
+//Custom Middleware: Authentication:
+const authMiddleware = (req, res, next) => {
+    const authHeader = req.headers [`authorization`];
+    if(!authHeader || authHeader !== 'Provide secret-token'){
+        return res.status(403).json({message: "Access denied: Invalid token"});
+    }
+    next();
+};
+
 // Error-Handling Middleware
 const errorHandler = (err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ error: 'Something went wrong!' });
 };
 
+//EJS
+app.set('view engine', 'ejs')
+app.set ('views', './views')
 
+//Static file:
+app.use(express.static("./public"));
 
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

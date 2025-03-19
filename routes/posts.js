@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
         return res.json(posts.filter(p => p.userId == req.query.useID));
      }
      res.json(posts);
-})
+});
 
 //New post:
 
@@ -23,5 +23,14 @@ router.post("/", (req, res) => {
     posts.push(newPost);
     res.status(201).json(newPost);
 })
+
+//Single post:
+
+router.get("/:id", (req, res) => {
+    const post = posts.find(p => p.id == req.params.id);
+    if(!post) return res.status(404).json({error: 'Post not found'})
+        res.json(post);
+});
+
 
 module.exports = router
